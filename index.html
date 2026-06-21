@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Système">
+<meta name="theme-color" content="#EFEDE5">
+<title>Mon Système</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16233F;--paper:#EFEDE5;--paper-2:#E7E4DA;--card:#FBFAF6;
+    --amber:#E0890F;--amber-soft:#F6E9CF;--teal:#256E69;--teal-soft:#D8E6E4;
+    --line:rgba(22,35,63,.14);--line-2:rgba(22,35,63,.08);--muted:#5C657A;
+    --nav-h:64px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.55;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+  }
+  ::selection{background:var(--amber);color:#fff}
+  .disp{font-family:'Space Grotesk',sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(239,237,229,.86);backdrop-filter:saturate(160%) blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+    padding:calc(env(safe-area-inset-top) + 10px) 18px 10px}
+  .topbar .brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;letter-spacing:.04em}
+  .topbar .brand b{color:var(--amber)}
+  .topbar .crumb{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+  /* content area */
+  main{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px)}
+  .tab{display:none;animation:fade .35s ease}
+  .tab.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .intro{padding:30px 0 8px}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink);opacity:.45}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,8vw,42px);line-height:1.05;letter-spacing:-.02em;margin:14px 0 0}
+  h1 .hl{color:var(--amber)}
+  .sub{font-size:15px;color:var(--muted);margin-top:14px}.sub b{color:var(--ink);font-weight:600}
+
+  .note{margin-top:20px;background:var(--ink);color:#EDEFF4;border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+  .note .k{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase;white-space:nowrap;padding-top:3px}
+  .note p{font-size:14px;line-height:1.55}.note p b{color:#fff}
+
+  .horizons{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+  .hz{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .hz .l .t{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+  .hz .l .d{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .hz .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;white-space:nowrap;color:var(--ink)}
+  .hz.now{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
+
+  .block{padding:26px 0;border-top:1px solid var(--line);margin-top:26px}
+  .block:first-of-type{border-top:none}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(21px,5.5vw,28px);letter-spacing:-.015em;line-height:1.12}
+  .lead{color:var(--muted);font-size:14.5px;margin-top:11px}.lead b{color:var(--ink);font-weight:600}
+  h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.01em;margin:24px 0 11px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .pill{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:var(--amber-soft);color:#9a5b00;font-weight:700}
+  .pill.teal{background:var(--teal-soft);color:var(--teal)}
+  p.tx{font-size:14px;color:#28324a;margin:10px 0}p.tx b{font-weight:600}
+
+  ul.li{list-style:none;margin:11px 0;display:flex;flex-direction:column;gap:6px}
+  ul.li li{font-size:13.5px;color:#28324a;padding-left:19px;position:relative;line-height:1.5}
+  ul.li li::before{content:"→";position:absolute;left:0;color:var(--amber);font-weight:700;font-size:12px}
+  ul.li li b{font-weight:600}
+  ul.check{list-style:none;margin:11px 0;display:flex;flex-direction:column;gap:6px}
+  ul.check li{font-size:13.5px;color:#28324a;padding-left:25px;position:relative;line-height:1.5}
+  ul.check li::before{content:"";position:absolute;left:0;top:3px;width:15px;height:15px;border:2px solid var(--ink);border-radius:4px;opacity:.5}
+
+  /* day timeline */
+  .day{margin-top:18px;position:relative}
+  .day::before{content:"";position:absolute;left:74px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .slot{position:relative;display:grid;grid-template-columns:64px 1fr;gap:0;padding:0 0 22px}
+  .slot:last-child{padding-bottom:0}
+  .slot .time{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;text-align:right;padding-right:24px;padding-top:2px}
+  .slot .time small{display:block;font-weight:400;font-size:9.5px;color:var(--muted);margin-top:2px}
+  .slot .bd{position:relative;padding-left:24px}
+  .slot .dot{position:absolute;left:-5px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+  .slot.life .dot{border-color:var(--teal)}.slot.biz .dot{border-color:var(--amber)}
+  .slot h4{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:600}
+  .slot .tag{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle}
+  .tag.l{background:var(--teal-soft);color:var(--teal)}.tag.w{background:var(--paper-2);color:var(--muted)}.tag.b{background:var(--amber-soft);color:#9a5b00}
+  .slot p{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:11.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:10px;height:10px;border-radius:50%;border:2px solid}
+  .legend .a{border-color:var(--teal)}.legend .c{border-color:var(--amber)}.legend .e{border-color:var(--muted)}
+
+  .weekend{margin-top:22px;background:var(--teal-soft);border-radius:14px;padding:18px;border:1px solid rgba(37,110,105,.2)}
+  .weekend h4{font-family:'Space Grotesk',sans-serif;font-size:15px;color:var(--teal);margin-bottom:5px}
+  .weekend p{font-size:13px;color:#2b4e4b}.weekend b{color:var(--teal)}
+
+  /* ladder */
+  .ladder{margin-top:18px;display:flex;flex-direction:column;gap:6px}
+  .rung{display:grid;grid-template-columns:30px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px;position:relative}
+  .rung .n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--amber);opacity:.55}
+  .rung h4{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:600}
+  .rung p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .rung .price{grid-column:2;font-family:'Space Mono',monospace;font-weight:700;font-size:13.5px;margin-top:7px}
+  .rung .price small{color:var(--muted);font-weight:400;letter-spacing:.04em}
+  .rung.core{border-color:var(--amber);background:linear-gradient(180deg,#fff,#FFFBF3)}
+  .rung.core .n{opacity:1}
+  .rung.core::after{content:"LEVIER 2-5K";position:absolute;top:-9px;right:14px;font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.12em;background:var(--amber);color:#fff;padding:3px 8px;border-radius:20px}
+
+  .math{margin-top:20px;background:var(--ink);color:#E7EAF1;border-radius:14px;padding:20px}
+  .math .eyebrow{color:#9aa6bd}.math .eyebrow::before{background:#9aa6bd;opacity:.6}
+  .math h4{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:10px 0 12px;color:#fff}
+  .math table{width:100%;border-collapse:collapse;font-size:13px}
+  .math td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+  .math td:last-child{text-align:right;font-family:'Space Mono',monospace;color:var(--amber);white-space:nowrap}
+  .math tr.total td{color:#fff;font-weight:700;font-size:14px;border-bottom:none;padding-top:12px}
+  .math tr.total td:last-child{color:var(--amber);font-size:16px}
+
+  /* roadmap */
+  .road{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .mo{border:1px solid var(--line);border-radius:12px;padding:15px 16px;background:var(--card)}
+  .mo .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .mo .mh .m{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.08em;color:var(--muted)}
+  .mo .mh .rev{font-family:'Space Mono',monospace;font-weight:700;font-size:13.5px;color:var(--amber)}
+  .mo h4{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px}
+  .mo ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .mo li{font-size:12.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.45}
+  .mo li::before{content:"→";position:absolute;left:0;color:var(--amber);font-size:11px}
+  .mo li b{color:var(--ink);font-weight:600}
+
+  /* laws */
+  .laws{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .law{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 17px}
+  .law .n{font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.1em}
+  .law h4{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:600;margin:6px 0 5px}
+  .law p{font-size:13px;color:var(--muted);line-height:1.5}.law p b{color:var(--ink)}
+
+  /* copy block */
+  .cb{margin:11px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+  .cb-h{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;background:var(--paper-2);border-bottom:1px solid var(--line)}
+  .cb-h .lbl{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .cb-h button{font-family:'Space Mono',monospace;font-size:11px;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:6px 13px;border-radius:8px;cursor:pointer;transition:.15s;min-height:32px}
+  .cb-h button:active{background:var(--ink);color:#fff}
+  .cb-h button.ok{background:var(--teal);border-color:var(--teal);color:#fff}
+  .cb .body{padding:14px 16px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;color:#1d2740}
+  .cb .body.mono{font-family:'Space Mono',monospace;font-size:12px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 17px;margin:11px 0}
+  .card h4{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:600}
+  .card .meta{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+  .card .meta span{font-size:12px;color:var(--muted)}.card .meta b{color:var(--ink);font-weight:600}
+
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0}
+  table.t th{text-align:left;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:7px 8px;border-bottom:2px solid var(--line)}
+  table.t td{padding:8px;border-bottom:1px solid var(--line-2);vertical-align:top;color:#28324a}
+  table.t td b{color:var(--ink)}
+
+  .week{display:grid;grid-template-columns:78px 1fr;gap:14px;border:1px solid var(--line);border-radius:12px;padding:14px 15px;margin:9px 0;background:var(--card)}
+  .week .wh{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+  .week .wh .d{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--amber);margin-top:3px}
+  .week .wc{font-size:13px;color:#28324a;line-height:1.5}.week .wc b{color:var(--ink);font-weight:600}
+
+  .tip{background:var(--teal-soft);border:1px solid rgba(37,110,105,.22);border-radius:12px;padding:13px 15px;margin:13px 0;font-size:13px;color:#234d4a}.tip b{color:var(--teal)}
+
+  /* checklist (persisted) */
+  .checks{margin:14px 0;display:flex;flex-direction:column;gap:8px}
+  .chk{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 15px;cursor:pointer;user-select:none;transition:.15s}
+  .chk:active{border-color:var(--amber)}
+  .chk input{display:none}
+  .chk .box{flex:0 0 24px;width:24px;height:24px;border:2px solid var(--ink);border-radius:7px;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.18s}
+  .chk .box svg{width:14px;height:14px;opacity:0;transform:scale(.5);transition:.18s}
+  .chk input:checked + .box{background:var(--amber);border-color:var(--amber)}
+  .chk input:checked + .box svg{opacity:1;transform:scale(1)}
+  .chk .ct h4{font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:600}
+  .chk input:checked ~ .ct h4{text-decoration:line-through;color:var(--muted)}
+  .chk .ct p{font-size:12px;color:var(--muted);margin-top:3px}
+  .chk .tm{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap;padding-top:3px}
+
+  blockquote.so{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:19px;line-height:1.35;margin:30px 0 8px;text-align:center}
+  blockquote.so .hl{color:var(--amber)}
+  .so-sm{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
+
+  /* bottom nav */
+  .tabbar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(251,250,246,.92);backdrop-filter:saturate(160%) blur(14px);
+    border-top:1px solid var(--line);display:flex;
+    padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  .tabbar button{flex:1;background:none;border:none;cursor:pointer;height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);transition:.15s}
+  .tabbar button .ic{font-size:21px;line-height:1;filter:grayscale(.4) opacity(.7)}
+  .tabbar button .lb{font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.01em}
+  .tabbar button.active{color:var(--amber)}
+  .tabbar button.active .ic{filter:none}
+  .tabbar button.active .lb{color:var(--ink)}
+
+  @media (min-width:520px){.card .meta{flex-direction:row;flex-wrap:wrap;gap:14px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">MON<b> SYSTÈME</b></div>
+  <div class="crumb" id="crumb">Système</div>
+</div>
+
+<main>
+  <!-- ============ TAB SYSTÈME ============ -->
+  <div class="tab active" id="systeme">
+    <div class="wrap">
+      <div class="intro">
+        <div class="eyebrow">Feuille de route · 6 mois</div>
+        <h1>Le moteur, c'est pas la motivation.<br><span class="hl">C'est le système.</span></h1>
+        <p class="sub">Tu pars de zéro, ~12‑14h/semaine, et tu cèdes à la procrastination. <b>Aucun des trois n'est le problème.</b> Le problème, c'est de compter sur l'envie. On la remplace par un rythme fixe où sport, nutrition, budget <b>et</b> business ont chacun leur case.</p>
+        <div class="note"><span class="k">À cadrer</span><p><b>2000‑5000€/mois, c'est atteignable</b> — mais pas avec un PDF à 37€ seul (plafond ~1500€). Le saut vient d'une <b>offre d'accompagnement à la voix</b> ajoutée au mois 3. Le contenu construit l'audience, l'accompagnement encaisse. Vise le bas de la fourchette d'abord.</p></div>
+        <div class="horizons">
+          <div class="hz now"><div class="l"><div class="t">Mois 1‑2 · Construire</div><div class="d">Comptes, contenu, liste email, produit d'entrée.</div></div><div class="v">~0→500€</div></div>
+          <div class="hz"><div class="l"><div class="t">Mois 3‑4 · Encaisser</div><div class="d">Lancement accompagnement. Affiliation.</div></div><div class="v">800→2200€</div></div>
+          <div class="hz"><div class="l"><div class="t">Mois 5‑6 · Stabiliser</div><div class="d">Récurrent + cohortes. La machine tourne.</div></div><div class="v">2000→5000€</div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Ta journée a déjà une forme. On la verrouille.</h2>
+        <p class="lead">Tu décides du rythme <b>une fois</b>, pas chaque soir. Gagner le matin (sport) lance la dynamique du soir.</p>
+        <div class="legend"><span><i class="a"></i> Corps &amp; vie (RECOMP)</span><span><i class="e"></i> Job 9‑17h</span><span><i class="c"></i> Projet</span></div>
+        <div class="day">
+          <div class="slot life"><div class="time">06:30<small>~1h</small></div><div class="bd"><span class="dot"></span><h4>Sport, avant tout<span class="tag l">corps</span></h4><p>Loggé dans RECOMP. Ton 1ᵉʳ « oui » de la journée — il rend les suivants faciles. L'ancre, non négociable.</p></div></div>
+          <div class="slot"><div class="time">09:00<small>→17:00</small></div><div class="bd"><span class="dot"></span><h4>Job<span class="tag w">CDI</span></h4><p>Zéro culpabilité : ton CDI finance ta liberté. À midi : noter 1 idée de hook.</p></div></div>
+          <div class="slot life"><div class="time">17:30<small>~20min</small></div><div class="bd"><span class="dot"></span><h4>Sas de transition<span class="tag l">vie</span></h4><p>Tu manges (meal‑prep), téléphone en mode avion. Rituel qui sépare salarié et entrepreneur.</p></div></div>
+          <div class="slot biz"><div class="time">18:00<small>2×50min</small></div><div class="bd"><span class="dot"></span><h4>Bloc projet — le cœur<span class="tag b">business</span></h4><p>Deux sprints de 50min, 10min de pause. <b>Une seule tâche par sprint</b>, choisie la veille. Pas plus : 2h tenues &gt; 4h rêvées.</p></div></div>
+          <div class="slot life"><div class="time">20:00<small>soir</small></div><div class="bd"><span class="dot"></span><h4>Off. Vraiment.<span class="tag l">vie</span></h4><p>La récup est du carburant. Un procrastinateur reposé revient demain ; épuisé, il abandonne.</p></div></div>
+        </div>
+        <div class="weekend"><h4>Le week‑end = atelier de production (≈4h)</h4><p><b>Samedi 2h :</b> batch de 3 vidéos d'avance. <b>Dimanche 2h :</b> meal‑prep + courses (budget RECOMP) + revue (30min). Batcher tue la décision quotidienne — donc la procrastination.</p></div>
+      </div>
+
+      <div class="block">
+        <h2>Le business : une échelle, pas un produit.</h2>
+        <p class="lead">On garde ton guide 37€ + affiliation comme marches basses, et on ajoute la marche qui change l'échelle de revenu : <b>l'accompagnement</b>.</p>
+        <div class="ladder">
+          <div class="rung"><div class="n">1</div><div><h4>Lead magnet gratuit</h4><p>« 5 méthodes pour lancer ton side business ». Capture l'email à chaque vidéo. Ton actif n°1.</p><div class="price">Gratuit <small>→ email</small></div></div></div>
+          <div class="rung"><div class="n">2</div><div><h4>Guide « 30 jours »</h4><p>Transforme un abonné en acheteur (la 1ʳᵉ vente est la plus dure). Pas ta source principale.</p><div class="price">37 → 47€ <small>tripwire</small></div></div></div>
+          <div class="rung core"><div class="n">3</div><div><h4>Accompagnement « 4 semaines »</h4><p>4 appels de 45min <b>à la voix</b> (sans visage) + guide + templates. <b>8 clients × 250€ = 2000€.</b></p><div class="price">197 → 397€ <small>cœur</small></div></div></div>
+          <div class="rung"><div class="n">4</div><div><h4>Récurrent — Le Cercle</h4><p>Communauté : Q&amp;A audio hebdo + responsabilisation. Tombe chaque mois. + affiliation récurrente.</p><div class="price">19‑29€/mois <small>récurrent</small></div></div></div>
+        </div>
+        <div class="math"><div class="eyebrow">Comment 3000€ se construit · mois 5‑6</div><h4>Un mix réaliste (pas une promesse)</h4>
+          <table><tr><td>8 accompagnements × 250€</td><td>2000€</td></tr><tr><td>18 guides × 37€</td><td>666€</td></tr><tr><td>15 membres × 25€</td><td>375€</td></tr><tr><td>Affiliation</td><td>~250€</td></tr><tr class="total"><td>Total mensuel</td><td>≈3290€</td></tr></table>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Les 6 mois, mois par mois.</h2>
+        <p class="lead">Fourchettes <b>réalistes si tu tiens le rythme</b> — pas des garanties. Les 2 premiers mois rapportent peu : tu construis l'actif qui paiera ensuite.</p>
+        <div class="road">
+          <div class="mo"><div class="mh"><span class="m">MOIS 1</span><span class="rev">~0€</span></div><h4>Fondations &amp; moteur de contenu</h4><ul><li><b>Week‑end 1 :</b> setup complet (onglet Setup).</li><li>4‑5 vidéos/semaine + 1 carrousel. Revue stats le jeudi.</li><li>Objectif : 500‑1500 abonnés, 50‑150 emails, <b>rythme verrouillé</b>.</li></ul></div>
+          <div class="mo"><div class="mh"><span class="m">MOIS 2</span><span class="rev">100‑500€</span></div><h4>Produit d'entrée &amp; liste</h4><ul><li>Rédige le guide 37€ (avec l'IA), mise en vente Gumroad.</li><li>Objectif : 150‑350 emails, 5‑20 ventes.</li></ul></div>
+          <div class="mo"><div class="mh"><span class="m">MOIS 3</span><span class="rev">800‑1800€</span></div><h4>Offre cœur : l'accompagnement</h4><ul><li>Conçois « 4 semaines » (appels voix). Vends à ta liste d'abord.</li><li>Objectif : 3‑6 clients. Le revenu décolle.</li></ul></div>
+          <div class="mo"><div class="mh"><span class="m">MOIS 4</span><span class="rev">1200‑2500€</span></div><h4>Systématiser la vente</h4><ul><li>Setup affiliation. <b>Atelier audio gratuit</b> → convertit vers l'accompagnement.</li></ul></div>
+          <div class="mo"><div class="mh"><span class="m">MOIS 5</span><span class="rev">1800‑3500€</span></div><h4>Récurrent &amp; scale</h4><ul><li>Lance « Le Cercle ». Cohorte mensuelle. Scale tes 3 meilleures vidéos.</li></ul></div>
+          <div class="mo"><div class="mh"><span class="m">MOIS 6</span><span class="rev">2000‑5000€</span></div><h4>Optimiser &amp; stabiliser</h4><ul><li>Optimise le tunnel, monte les prix. Le bas de fourchette est solide ; le haut demande une vidéo qui perce.</li></ul></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Le système anti‑procrastination.</h2>
+        <p class="lead"><b>Ta vraie clé.</b> Ces 8 lois marchent les jours sans envie — ce sont eux qui décident de tout.</p>
+        <div class="laws">
+          <div class="law"><div class="n">LOI 01</div><h4>La journée non‑zéro</h4><p>Jour pourri ? <b>Une</b> micro‑action : 1 hook, 1 voix off. La chaîne ne casse pas. Avancer bat se reposer ; se reposer bat reculer.</p></div>
+          <div class="law"><div class="n">LOI 02</div><h4>Décider la veille</h4><p>Avant de fermer le bloc, écris <b>la seule tâche de demain</b>. La décision est le vrai point de friction.</p></div>
+          <div class="law"><div class="n">LOI 03</div><h4>Posté &gt; parfait</h4><p>Publie à 80%. L'algo récompense la régularité. Le perfectionnisme est de la procrastination déguisée.</p></div>
+          <div class="law"><div class="n">LOI 04</div><h4>Si… alors…</h4><p>« <b>Si</b> je rentre à 17h30, <b>alors</b> mode avion et CapCut à 18h00. » Tu suis un déclencheur, pas l'envie.</p></div>
+          <div class="law"><div class="n">LOI 05</div><h4>Zéro friction au démarrage</h4><p>Templates, scripts, B‑roll prêts. Quand le bloc commence, rien à préparer — juste exécuter.</p></div>
+          <div class="law"><div class="n">LOI 06</div><h4>Batch, ne goutte pas</h4><p>Produis en lot le week‑end, diffuse en semaine. Chaque démarrage coûte de l'énergie de volonté.</p></div>
+          <div class="law"><div class="n">LOI 07</div><h4>Construire en public</h4><p>Documenter en temps réel = ton meilleur contenu <i>et</i> ton garde‑fou : des gens suivent.</p></div>
+          <div class="law"><div class="n">LOI 08</div><h4>La revue du dimanche</h4><p>Ce qui a marché, planifier la semaine, <b>noter 1 victoire.</b> Célébrer les petits gains = carburant.</p></div>
+        </div>
+        <blockquote class="so">Tu n'as pas besoin de résultats.<br>Tu as besoin d'un <span class="hl">parcours en cours.</span></blockquote>
+        <div class="so-sm">Onglet Setup → commence ce week‑end</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB SETUP ============ -->
+  <div class="tab" id="setup">
+    <div class="wrap">
+      <div class="intro">
+        <div class="eyebrow">Par où je commence · Quand</div>
+        <h1>Commence <span class="hl">ici.</span></h1>
+        <p class="sub">5 actions minuscules d'abord, puis ton week‑end 1 pas‑à‑pas, puis le calendrier des 30 jours. <b>Fais la première action ce soir.</b></p>
+      </div>
+
+      <div class="block">
+        <h2>Tes 48 prochaines heures</h2>
+        <p class="lead">La procrastination adore les plans flous. Coche ces 5 actions — l'état est gardé sur ton téléphone.</p>
+        <div class="checks">
+          <label class="chk"><input type="checkbox" data-k="c1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 13l4 4L19 7"/></svg></span><span class="ct"><h4>Vérifier le @ + créer les 2 comptes Pro</h4><p>TikTok + Instagram, même nom.</p></span><span class="tm">ce soir</span></label>
+          <label class="chk"><input type="checkbox" data-k="c2"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 13l4 4L19 7"/></svg></span><span class="ct"><h4>Logo sur Canva</h4><p>Fond #1B2A4A + accent #F4A623, Space Grotesk Bold.</p></span><span class="tm">ce soir</span></label>
+          <label class="chk"><input type="checkbox" data-k="c3"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 13l4 4L19 7"/></svg></span><span class="ct"><h4>Bloquer le créneau 18h‑20h dans l'agenda</h4><p>Comme un RDV non‑déplaçable, 5 jours. L'acte le plus important.</p></span><span class="tm">2min</span></label>
+          <label class="chk"><input type="checkbox" data-k="c4"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 13l4 4L19 7"/></svg></span><span class="ct"><h4>Créer le compte systeme.io (gratuit)</h4><p>Ouvre‑le maintenant pour réduire la friction de samedi.</p></span><span class="tm">10min</span></label>
+          <label class="chk"><input type="checkbox" data-k="c5"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M5 13l4 4L19 7"/></svg></span><span class="ct"><h4>Brouillon des 5 fiches du lead magnet</h4><p>En vrac dans un Google Doc. Posté &gt; parfait.</p></span><span class="tm">week‑end</span></label>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Setup express — week‑end 1 (8h)</h2>
+        <p class="lead">Tout en place, prêt à publier. Suis l'ordre, ne perfectionne rien.</p>
+
+        <h3><span class="pill">Samedi matin · 2h</span> Comptes &amp; identité</h3>
+        <ul class="check"><li>Vérifie la dispo du nom sur TikTok et Instagram.</li><li>Crée les 2 comptes en Pro, même @.</li><li>Logo Canva → même photo de profil partout.</li></ul>
+        <div class="cb"><div class="cb-h"><span class="lbl">Noms à tester</span><button onclick="cp(this)">Copier</button></div><div class="body mono">@salarie.libre
+@revenus.complementaires
+@side.business.salarie
+@projet.apres.17h</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Bio TikTok</span><button onclick="cp(this)">Copier</button></div><div class="body">Salarié qui documente son side business en temps réel · 5 méthodes pour démarrer (gratuit) 👇</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Bio Instagram</span><button onclick="cp(this)">Copier</button></div><div class="body">Side business pour salariés 25‑35 ans · 5h/semaine suffisent · Guide de démarrage gratuit 👇</div></div>
+
+        <h3><span class="pill">Samedi aprem · 2h</span> Tunnel systeme.io</h3>
+        <ul class="check"><li>Tunnel « Collecter des leads » → livraison auto du PDF.</li><li>Configure les 5 emails (onglet Contenu) : J+0, J+1, J+3, J+5, J+7.</li><li>Colle le lien de la page dans les 2 bios.</li></ul>
+        <div class="cb"><div class="cb-h"><span class="lbl">Page de capture</span><button onclick="cp(this)">Copier</button></div><div class="body">Titre : Les 5 méthodes pour lancer ton side business en 5h/semaine (sans quitter ton CDI)
+
+Sous‑titre : Le guide PDF gratuit que j'aurais voulu avoir avant de me lancer.
+
+Bouton : Recevoir le guide gratuit
+Champ : Ton meilleur email →</div></div>
+
+        <h3><span class="pill">Samedi soir · 2h</span> Templates CapCut + B‑roll</h3>
+        <ul class="li"><li><b>Template A — Texte animé :</b> fond #1B2A4A, texte blanc, apparition par le bas, lo‑fi 20%.</li><li><b>Template B — Voix off + B‑roll :</b> fond lifestyle/bureau, texte blanc ombré, ta voix, musique 15%.</li><li><b>Template C — Screen recording :</b> barre titre bleu marine, sous‑titres auto, musique 15%.</li></ul>
+        <div class="cb"><div class="cb-h"><span class="lbl">Mots‑clés B‑roll · Pexels (gratuit)</span><button onclick="cp(this)">Copier</button></div><div class="body mono">laptop work · office desk · city commute · coffee morning · typing keyboard · money euro · phone scrolling · sunrise window · notebook planning · walking street</div></div>
+
+        <h3><span class="pill">Dimanche · 2h</span> Tes 3 premières vidéos</h3>
+        <p class="tx">Monte les vidéos 1, 2, 3 (scripts dans l'onglet Contenu) avec le Template B. Sous‑titres auto. Tu actives les comptes. <b>Fin du week‑end : 3 vidéos en boîte.</b></p>
+        <div class="tip"><b>Règle d'or :</b> ces vidéos testent l'algorithme, elles n'ont pas à être parfaites. Le démarrage est l'objectif.</div>
+      </div>
+
+      <div class="block">
+        <h2>Ton calendrier 30 jours</h2>
+        <p class="lead">Le mois 1 collé sur ton rythme. Tu n'as plus à décider quoi faire.</p>
+        <div class="week"><div class="wh">WEEK‑END 1<div class="d">J1‑J2 · 8h</div></div><div class="wc"><b>Setup complet.</b> Comptes, logo, bios, systeme.io + emails, templates, B‑roll, 3 vidéos. Prêt à publier.</div></div>
+        <div class="week"><div class="wh">SEMAINE 2<div class="d">J3‑J7</div></div><div class="wc">Publie <b>vidéos 1‑2‑3</b> (lun/mer/ven) + 1 carrousel. Jeudi soir : revue stats. Week‑end : batch 4‑5‑6 + meal‑prep + revue.</div></div>
+        <div class="week"><div class="wh">SEMAINE 3<div class="d">J8‑J14</div></div><div class="wc">Vidéos <b>4‑5‑6</b>. Stories vers le lead magnet. Si une vidéo perce (&gt;15k) → 2 variations sous 48h.</div></div>
+        <div class="week"><div class="wh">SEMAINE 4<div class="d">J15‑J21</div></div><div class="wc">Vidéos <b>7‑8</b> + carrousel <b>9</b> + stories <b>10</b>. La vidéo 8 ouvre la pré‑vente. Objectif : 500‑1500 abonnés, 50‑150 emails.</div></div>
+        <div class="week"><div class="wh">SEMAINE 5<div class="d">J22‑J28+</div></div><div class="wc">Mois 2 : rédaction du guide payant (week‑end, IA), 4 vidéos/semaine. Préparation du lancement Gumroad.</div></div>
+        <div class="tip"><b>La seule règle qui décide de tout :</b> zéro jour à zéro action sur 30 jours.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB CONTENU ============ -->
+  <div class="tab" id="contenu">
+    <div class="wrap">
+      <div class="intro">
+        <div class="eyebrow">Tout est écrit · Prêt à copier</div>
+        <h1>Plus de <span class="hl">page blanche.</span></h1>
+        <p class="sub">Lead magnet, 5 emails, 30 accroches, 10 scripts voix off. Chaque bloc a un bouton « Copier ».</p>
+      </div>
+
+      <div class="block">
+        <h2>Le lead magnet, rédigé</h2>
+        <p class="lead">PDF ~12 slides sur Canva. Voici le contenu, tu mets en forme.</p>
+        <div class="cb"><div class="cb-h"><span class="lbl">Slide 1 — Couverture</span><button onclick="cp(this)">Copier</button></div><div class="body">5 MÉTHODES POUR LANCER TON SIDE BUSINESS
+en 5h/semaine, sans quitter ton CDI
+— Le guide de démarrage honnête —</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Slide 2 — Mode d'emploi</span><button onclick="cp(this)">Copier</button></div><div class="body">Tu n'en choisis qu'UNE : celle qui colle à ton temps et tes compétences, et tu lances UNIQUEMENT celle‑là cette semaine. La dispersion tue les side business.</div></div>
+        <table class="t"><thead><tr><th>Méthode</th><th>1ᵉʳ €</th><th>1ʳᵉ action</th></tr></thead><tbody>
+          <tr><td><b>1. Freelance de compétence</b><br>Vendre le soir une compétence « bureau »</td><td>1‑2 sem.</td><td>Profil Malt + 1 service</td></tr>
+          <tr><td><b>2. Contenu + affiliation</b><br>Poster sans visage + recommander des outils</td><td>4‑8 sem.</td><td>Poster 3 vidéos cette semaine</td></tr>
+          <tr><td><b>3. Produit digital</b><br>Ebook, template Notion, tableur</td><td>3‑6 sem.</td><td>Lister 5 problèmes à résoudre</td></tr>
+          <tr><td><b>4. Prestation « done‑for‑you »</b><br>Faire pour des TPE locales</td><td>1‑3 sem.</td><td>Lister 10 commerces à contacter</td></tr>
+          <tr><td><b>5. Revente / arbitrage</b><br>Acheter bas, revendre mieux</td><td>1‑2 sem.</td><td>Choisir 1 catégorie connue</td></tr>
+        </tbody></table>
+        <div class="cb"><div class="cb-h"><span class="lbl">Slides 8‑9 — Checklist</span><button onclick="cp(this)">Copier</button></div><div class="body">□ J'ai choisi UNE méthode (pas deux)
+□ J'ai défini ma 1ʳᵉ action concrète
+□ J'ai bloqué 2 créneaux cette semaine
+□ J'ai prévenu une personne (responsabilité)
+□ J'ai fait la 1ʳᵉ action AVANT de me sentir prêt</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Slides 11‑12 — Conclusion + CTA</span><button onclick="cp(this)">Copier</button></div><div class="body">Tu n'as pas besoin d'être un expert. Juste d'avoir un peu d'avance et d'être honnête sur ton parcours.
+
+Je documente le mien en temps réel. Rejoins‑moi → @ton.compte</div></div>
+      </div>
+
+      <div class="block">
+        <h2>La séquence email (5 emails)</h2>
+        <p class="lead">À coller dans systeme.io. De l'inconnu à l'acheteur.</p>
+        <div class="cb"><div class="cb-h"><span class="lbl">Email 1 · J+0 · Livraison</span><button onclick="cp(this)">Copier</button></div><div class="body">Objet : C'est là 👇 (+ une question)
+
+Salut,
+
+Ton guide est en pièce jointe — les 5 méthodes pour lancer ton side business en 5h/semaine.
+
+Avant de le lire, une promesse : tu n'en choisis qu'UNE. La dispersion est la raison n°1 des abandons.
+
+Réponds‑moi avec le numéro de celle qui t'attire (1 à 5). Je lis tout.
+
+À demain,
+[Ton prénom]</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Email 2 · J+1 · Outils + affiliation</span><button onclick="cp(this)">Copier</button></div><div class="body">Objet : Les 3 outils gratuits qui m'ont fait gagner 10h
+
+Tu as ton guide. Maintenant, l'équipement.
+
+3 outils que j'utilise tous les jours, gratuits pour démarrer :
+1. [Outil 1] — pour [usage] → [ton lien affilié]
+2. [Outil 2] — pour [usage] → [ton lien affilié]
+3. [Outil 3] — pour [usage] → [ton lien affilié]
+
+(Transparence : si tu passes par mes liens, je touche une commission sans surcoût pour toi.)
+
+Demain : l'erreur qui m'a fait perdre 3 semaines.
+[Ton prénom]</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Email 3 · J+3 · Histoire</span><button onclick="cp(this)">Copier</button></div><div class="body">Objet : J'ai failli abandonner au bout de 12 jours
+
+Au début je voulais que tout soit parfait : logo, nom, « bonne » niche. Résultat : 12 jours à préparer, 0 publié.
+
+Ce qui a tout changé : « posté vaut mieux que parfait ». J'ai publié une vidéo moyenne. Puis une autre. La 6ᵉ a fait 14 000 vues.
+
+Ton parcours EN COURS est ton meilleur contenu.
+
+Tu en es où ? Réponds‑moi.
+[Ton prénom]</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Email 4 · J+5 · Lancement guide</span><button onclick="cp(this)">Copier</button></div><div class="body">Objet : J'ai mis tout le système au propre
+
+Le guide gratuit te donne les 5 portes d'entrée. Vous avez été plusieurs à demander le plan jour par jour.
+
+Je l'ai écrit. « Side Business en 30 jours » : de 0 à tes premiers 300€ hors salaire, étape par étape.
+
+Prix de lancement : 37€. Garantie 7 jours, sans condition.
+→ [lien Gumroad]
+[Ton prénom]</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Email 5 · J+7 · Engagement</span><button onclick="cp(this)">Copier</button></div><div class="body">Objet : Comment ne plus jamais lâcher (la vraie clé)
+
+La compétence qui décide de tout, ce n'est pas le marketing. C'est de continuer les jours sans envie.
+
+Ma méthode : la « journée non‑zéro ». Jour pourri ? UNE micro‑action. La chaîne ne casse jamais.
+
+Si un jour tu veux que je t'aide directement sur ton lancement, réponds « INTÉRESSÉ ».
+[Ton prénom]</div></div>
+        <div class="tip"><b>Astuce :</b> les « INTÉRESSÉ » de l'email 5 = ta liste d'attente pour l'accompagnement du mois 3.</div>
+      </div>
+
+      <div class="block">
+        <h2>30 accroches + 10 scripts</h2>
+        <p class="lead">Les 3 premières secondes décident de tout.</p>
+        <div class="cb"><div class="cb-h"><span class="lbl">30 accroches</span><button onclick="cp(this)">Copier</button></div><div class="body mono">1. 1 820 heures par an pour ton patron. Et combien pour toi ?
+2. Tu n'as pas besoin de plus de temps. Tu as besoin de 5 heures bien placées.
+3. Le pire conseil : « suis ta passion ». Voici pourquoi.
+4. CDI de 9 à 17h. Je lance un business sans démissionner. Jour 1.
+5. Arrête de chercher « comment gagner de l'argent en ligne ». Pose plutôt cette question.
+6. 3 side business que tu peux lancer ce soir avec 0€.
+7. Pourquoi 90% des side business meurent au bout de 2 semaines.
+8. Ton salaire paie tes factures. Ton side business paie ta liberté.
+9. Je gagne 0€ pour l'instant. Et je te montre tout. Pourquoi c'est une force.
+10. La compétence la plus rentable en 2026 n'est pas le code. C'est ça.
+11. Tu crois qu'il te faut une audience. Faux. Il te faut 100 emails.
+12. 5h/semaine × 6 mois = un 2ème salaire.
+13. Le logo parfait, le nom parfait… c'est de la procrastination déguisée.
+14. 3 outils 100% gratuits pour lancer cette semaine.
+15. Pourquoi je ne montre pas mon visage (et pourquoi ça marche mieux).
+16. Le revenu le plus rapide quand on part de zéro, ce n'est pas la pub.
+17. Tu n'as pas besoin d'être expert. Juste d'avoir 3 jours d'avance.
+18. Combien rapporte vraiment une vidéo ? Le chiffre va te surprendre.
+19. L'erreur n°1 du salarié qui veut un revenu complémentaire.
+20. 30 minutes le soir. C'est tout. Voici ce que j'en fais.
+21. Si je repartais de zéro, voici mes 7 premiers jours.
+22. Ton CDI est le meilleur investisseur de ton side business.
+23. Le piège du « je me lancerai quand j'aurai le temps ».
+24. 5 méthodes classées de la plus lente à la plus rapide à rentabiliser.
+25. Pourquoi un accompagnement rapporte 10× plus qu'un ebook.
+26. Le premier euro en ligne change ton cerveau. Comment l'atteindre.
+27. Tu scrolles 2h par jour. Imagine‑les investies 60 jours.
+28. Ce que j'aurais aimé qu'on me dise avant de me lancer.
+29. J'ai demandé à 50 salariés pourquoi ils n'osent pas. Même réponse.
+30. La règle qui m'a sauvé : « posté vaut mieux que parfait ».</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Vidéo 1 · Lancement · ~35s</span><button onclick="cp(this)">Copier</button></div><div class="body">[ACCROCHE]
+« J'ai un CDI, de 9h à 17h. Et ce soir, je lance un business. En public. »
+[CORPS]
+« Pas pour frimer. Pour me forcer à aller au bout. La règle : 5 heures par semaine, pas une de plus. Pas de visage, pas de capital, pas d'excuse. Je documente tout — les ratés compris. »
+[CTA]
+« Si t'as un salaire mais l'impression de plafonner, abonne‑toi. Mes 5 méthodes sont en bio, gratuit. »</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Vidéo 2 · Chiffre choquant · ~35s</span><button onclick="cp(this)">Copier</button></div><div class="body">[ACCROCHE]
+« 1 820 heures par an pour ton employeur. Tu sais combien il t'en reste pour toi ? »
+[CORPS]
+« Environ 4 000, sommeil enlevé. Le problème n'a jamais été le temps : c'est où tu le mets. 5h/semaine — deux soirs et un bout de week‑end — suffisent. Je le prouve en temps réel. »
+[CTA]
+« Méthode complète, gratuite, en bio. »</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Vidéo 3 · Contre‑intuitif · ~35s</span><button onclick="cp(this)">Copier</button></div><div class="body">[ACCROCHE]
+« Arrête de chercher comment gagner de l'argent en ligne. Pose‑toi d'abord cette question. »
+[CORPS]
+« « Qu'est‑ce que je sais faire qu'une personne paierait pour apprendre ou déléguer ? » Tout part de là, pas d'une niche à la mode. Pas besoin d'être expert. Juste un peu d'avance, et de l'honnêteté. »
+[CTA]
+« Les 5 portes d'entrée, gratuites, en bio. »</div></div>
+        <div class="cb"><div class="cb-h"><span class="lbl">Vidéos 4 à 10 · angles &amp; CTA</span><button onclick="cp(this)">Copier</button></div><div class="body">V4 · Objection temps — « 30 min le soir, c'est tout. » Montre 1 bloc de 50min. CTA : comment je protège ces créneaux → bio.
+V5 · Démo — « Comment je monte sans montrer mon visage. » Screen recording. CTA : templates dans le guide.
+V6 · Erreur — « L'erreur qui m'a coûté 3 semaines. » Le perfectionnisme. CTA : la règle qui m'a débloqué → bio.
+V7 · Tuto Malt — « Vendre une compétence dès ce week‑end. » 4 étapes. CTA : méthode 1 du guide.
+V8 · Conversion — « Mes 30 premiers jours si je repartais de zéro. » Aperçu du plan. CTA : guide complet 37€, bio.
+V9 · Carrousel Insta — « Top 5 side business classés par rapidité. » = les 5 méthodes. Slide 8 = CTA guide.
+V10 · Transparence — « Bilan 3 semaines : les vrais chiffres. » Vues/abonnés/emails/ventes. CTA : abonne‑toi + guide.</div></div>
+        <div class="tip"><b>Rythme :</b> 4‑5 vidéos/semaine. Vidéo &gt;15k vues → 2 variations du hook sous 48h.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB OFFRES ============ -->
+  <div class="tab" id="offres">
+    <div class="wrap">
+      <div class="intro">
+        <div class="eyebrow">Ce qui encaisse</div>
+        <h1>Tes <span class="hl">offres.</span></h1>
+        <p class="sub">Le guide d'entrée (mois 2) et l'accompagnement (mois 3) — le levier vers 2‑5k.</p>
+      </div>
+
+      <div class="block">
+        <h2>Le guide payant — mois 2</h2>
+        <p class="lead">35‑45 pages, écrites avec l'IA (tu donnes le plan, tu adaptes à ta voix). Vente Gumroad.</p>
+        <div class="card"><h4>Side Business en 30 jours</h4><div class="meta"><span><b>Prix :</b> 37€ → 47€ après 10 ventes → 67€ après 25</span><span><b>Garantie :</b> 7 jours sans condition</span><span><b>Format :</b> PDF + checklist + tableur</span></div></div>
+        <table class="t"><thead><tr><th>Chapitre</th><th>Contenu</th></tr></thead><tbody>
+          <tr><td><b>Intro</b></td><td>Pourquoi le side business change tout. État d'esprit : avancer &gt; attendre.</td></tr>
+          <tr><td><b>Ch.1</b></td><td>Les 5 méthodes en détail : étapes, exemples, prix de départ, premiers clients.</td></tr>
+          <tr><td><b>Ch.2</b></td><td>Le plan 30 jours, jour par jour. Zéro décision à prendre.</td></tr>
+          <tr><td><b>Ch.3</b></td><td>Les erreurs exactes à éviter et comment les contourner.</td></tr>
+          <tr><td><b>Ch.4</b></td><td>Les outils gratuits qui automatisent (avec tes liens affiliés).</td></tr>
+          <tr><td><b>Ch.5</b></td><td>Mesurer &amp; ajuster : le tableau de suivi, les 3 KPI, quand pivoter.</td></tr>
+          <tr><td><b>Bonus</b></td><td>Checklist 10 étapes + 20 programmes d'affiliation pour salariés.</td></tr>
+        </tbody></table>
+        <div class="cb"><div class="cb-h"><span class="lbl">Page de vente Gumroad</span><button onclick="cp(this)">Copier</button></div><div class="body">Tu as un CDI. Tu veux un revenu en plus. Mais entre le boulot, la fatigue et les « je m'y mets demain »… tu n'as jamais vraiment commencé.
+
+Ce guide est le plan que j'aurais voulu avoir : 30 jours, étape par étape, pour aller de 0 à tes premiers 300€ hors salaire — en 5h/semaine, sans visage, sans capital.
+
+Dedans :
+• Les 5 méthodes détaillées (et comment choisir LA tienne)
+• Le plan d'action jour par jour
+• Les erreurs qui font perdre des semaines
+• Les outils gratuits qui automatisent
+• Le tableau de suivi pour ne jamais lâcher
+
+Prix de lancement : 37€. Satisfait ou remboursé 7 jours, sans question.
+
+Tu n'as pas besoin de plus de motivation. Tu as besoin d'un plan qui ne te laisse pas le choix de procrastiner.
+
+→ Je récupère mon plan</div></div>
+      </div>
+
+      <div class="block">
+        <h2>L'accompagnement — mois 3</h2>
+        <p class="lead">L'offre qui change ton revenu d'échelle. Appels à la voix (sans visage). Vends d'abord aux « INTÉRESSÉ ».</p>
+        <div class="card"><h4>« Lancement 4 Semaines »</h4><div class="meta"><span><b>Prix :</b> 197€ → 297€ → 397€</span><span><b>Format :</b> 4 appels voix de 45min + support</span><span><b>Cible :</b> 8 clients/mois = 2000€</span></div></div>
+        <table class="t"><thead><tr><th>Semaine</th><th>Le client repart avec</th></tr></thead><tbody>
+          <tr><td><b>S1 — Cadrage</b></td><td>Un plan personnalisé + son créneau bloqué</td></tr>
+          <tr><td><b>S2 — Production</b></td><td>Ses 3 premiers livrables publiés/envoyés</td></tr>
+          <tr><td><b>S3 — Traction</b></td><td>Une version corrigée qui convertit mieux</td></tr>
+          <tr><td><b>S4 — Premier euro</b></td><td>Un système qui tourne + plan 60 jours</td></tr>
+        </tbody></table>
+        <p class="tx"><b>Inclus :</b> le guide, tes templates, ta séquence email. La valeur est déjà produite — tu factures le suivi et la personnalisation.</p>
+        <div class="cb"><div class="cb-h"><span class="lbl">Message de vente (stories / email)</span><button onclick="cp(this)">Copier</button></div><div class="body">Tu as le guide. Tu sais quoi faire. Mais entre « savoir » et « faire », il y a un fossé — et c'est là que la plupart abandonnent.
+
+J'ouvre un nombre limité de places pour t'accompagner sur 4 semaines :
+• 4 appels de 45min (à la voix, pas besoin de caméra)
+• On choisit TA méthode, on installe ton rythme, on débloque ta production
+• Tu repars avec ton premier euro hors salaire
+
+Places limitées. Prix de lancement : 197€.
+
+Réponds « GO » et je t'envoie le lien de réservation.</div></div>
+        <div class="tip"><b>Pourquoi ça marche sans grosse audience :</b> 8 ventes/mois = 2000€. Avec 300‑500 emails engagés, c'est atteignable. C'est pour ça que construire la liste (mois 1‑2) n'est jamais une perte de temps.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="tabbar">
+  <button data-tab="systeme" class="active"><span class="ic">🧭</span><span class="lb">Système</span></button>
+  <button data-tab="setup"><span class="ic">🚀</span><span class="lb">Setup</span></button>
+  <button data-tab="contenu"><span class="ic">✍️</span><span class="lb">Contenu</span></button>
+  <button data-tab="offres"><span class="ic">💸</span><span class="lb">Offres</span></button>
+</nav>
+
+<script>
+  var titles={systeme:'Système',setup:'Setup',contenu:'Contenu',offres:'Offres'};
+  function showTab(id){
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.id===id);});
+    document.querySelectorAll('.tabbar button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===id);});
+    var c=document.getElementById('crumb');if(c)c.textContent=titles[id]||'';
+    window.scrollTo(0,0);
+    try{localStorage.setItem('sys_lastTab',id);}catch(e){}
+  }
+  document.querySelectorAll('.tabbar button').forEach(function(b){
+    b.addEventListener('click',function(){showTab(b.getAttribute('data-tab'));});
+  });
+  // restore last tab
+  try{var last=localStorage.getItem('sys_lastTab');if(last&&titles[last])showTab(last);}catch(e){}
+
+  // copy
+  function cp(btn){
+    var block=btn.closest('.cb');var txt=block.querySelector('.body').innerText;
+    var done=function(){var o=btn.textContent;btn.textContent='Copié ✓';btn.classList.add('ok');setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1400);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(function(){fb(txt,done);});}
+    else{fb(txt,done);}
+  }
+  function fb(txt,done){try{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){}}
+
+  // checklist persistence
+  (function(){
+    var boxes=document.querySelectorAll('.chk input[type=checkbox]');
+    boxes.forEach(function(b){
+      var k=b.getAttribute('data-k');
+      try{b.checked=localStorage.getItem('sys_'+k)==='1';}catch(e){}
+      b.addEventListener('change',function(){try{localStorage.setItem('sys_'+k,b.checked?'1':'0');}catch(e){}});
+    });
+  })();
+</script>
+</body>
+</html>
