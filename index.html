@@ -252,6 +252,29 @@
   .tabbar button .ic{font-size:20px}
 
   @media (min-width:520px){.card .meta{flex-direction:row;flex-wrap:wrap;gap:14px}}
+  /* en danger + perso + onboarding */
+  .streak-warn{display:none;margin:11px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12.5px;color:#9a5b00;background:var(--amber-soft);border-radius:9px;padding:9px 12px;text-align:center;line-height:1.35}
+  .streak-warn.on{display:block}
+  @keyframes nzpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+  .tabbar button .ic{position:relative}
+  .tabbar button.nz .ic::after{content:"";position:absolute;top:-3px;right:-9px;width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 2px var(--card)}
+  @media (prefers-reduced-motion:no-preference){.tabbar button.nz .ic::after{animation:nzpulse 1.6s ease-in-out infinite}}
+  .home-perso{display:none;margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.03em;color:var(--muted)}
+  .home-perso.on{display:block}
+  .home-perso b{color:var(--ink);font-weight:700}
+  .ob-overlay{position:fixed;inset:0;z-index:200;background:rgba(22,35,63,.72);display:none;align-items:flex-end;justify-content:center}
+  .ob-overlay.on{display:flex}
+  .ob-modal{background:var(--paper);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:26px 22px calc(26px + env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto;animation:obup .3s ease}
+  @keyframes obup{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+  .ob-modal h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:23px;letter-spacing:-.015em;line-height:1.12;margin-top:6px}
+  .ob-modal p.obp{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  .ob-q{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;margin:22px 0 10px}
+  .ob-date{width:100%;font-family:'Inter',sans-serif;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 14px}
+  .ob-opts{display:flex;flex-direction:column;gap:8px}
+  .ob-opt{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;font-family:'Inter',sans-serif;font-size:14.5px;color:var(--ink);transition:.15s}
+  .ob-opt.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;background:linear-gradient(180deg,#fff,#FFFBF3);font-weight:600}
+  .ob-go{width:100%;border:none;border-radius:12px;background:var(--amber);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15.5px;padding:15px;cursor:pointer;margin-top:24px;min-height:52px}
+  .ob-skip{display:block;width:100%;text-align:center;background:none;border:none;color:var(--muted);font-size:12.5px;margin-top:12px;cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -269,6 +292,7 @@
         <div class="eyebrow" id="home-date">—</div>
         <h1 class="home-h1">Salut. <span class="hl">On avance ?</span></h1>
         <p class="home-tag">Ta seule mission aujourd'hui : une <b>journée non‑zéro</b>. Une action, même minuscule, et la chaîne tient.</p>
+        <div class="home-perso" id="home-perso"></div>
       </div>
 
       <div class="hcard streak-card">
@@ -277,6 +301,7 @@
           <div class="streak-flame" id="streak-flame">🔥</div>
         </div>
         <div class="streak-dots" id="streak-dots"></div>
+        <div class="streak-warn" id="streak-warn"></div>
         <button class="streak-btn" id="streak-btn">J'ai fait ma journée non‑zéro ✓</button>
       </div>
 
@@ -823,6 +848,24 @@ Réponds « GO » et je t'envoie le lien de réservation.</div></div>
   </div>
 </main>
 
+<div class="ob-overlay" id="ob-overlay">
+  <div class="ob-modal">
+    <div class="eyebrow">Bienvenue dans ton cockpit</div>
+    <h2>On cale ton plan en 10 secondes.</h2>
+    <p class="obp">Deux infos pour personnaliser ton tableau de bord. Tu pourras tout changer plus tard.</p>
+    <div class="ob-q">Tu démarres quand ?</div>
+    <input type="date" id="ob-date" class="ob-date">
+    <div class="ob-q">Ton objectif ?</div>
+    <div class="ob-opts" id="ob-opts">
+      <button class="ob-opt" data-goal="Me lancer, enfin">🚀&nbsp; Juste me lancer, enfin</button>
+      <button class="ob-opt" data-goal="2 000–5 000€/mois">💸&nbsp; Viser 2 000–5 000€/mois</button>
+      <button class="ob-opt" data-goal="10 000€/mois">🔥&nbsp; Viser 10 000€/mois</button>
+    </div>
+    <button class="ob-go" id="ob-go">Entrer dans le cockpit →</button>
+    <button class="ob-skip" id="ob-skip">Passer pour l'instant</button>
+  </div>
+</div>
+
 <nav class="tabbar">
   <button data-tab="accueil" class="active"><span class="ic">🏠</span><span class="lb">Accueil</span></button>
   <button data-tab="systeme"><span class="ic">🧭</span><span class="lb">Système</span></button>
@@ -864,6 +907,8 @@ Réponds « GO » et je t'envoie le lien de réservation.</div></div>
 
   /* ===== ACCUEIL interactif ===== */
   function lkey(dt){var m=''+(dt.getMonth()+1);if(m.length<2)m='0'+m;var d=''+dt.getDate();if(d.length<2)d='0'+d;return dt.getFullYear()+'-'+m+'-'+d;}
+  function parseISO(s){var p=(''+s).split('-');return new Date(+p[0],(+p[1])-1,+p[2]);}
+  function stripTime(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
   function getNZ(){try{return JSON.parse(ls_get('sys_nz','[]'));}catch(e){return[];}}
   function setNZ(a){ls_set('sys_nz',JSON.stringify(a));}
   function streakFrom(set){var s=0;var d=new Date();if(!set[lkey(d)])d.setDate(d.getDate()-1);while(set[lkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
@@ -887,6 +932,28 @@ Réponds « GO » et je t'envoie le lien de réservation.</div></div>
     else{btn.textContent='J\'ai fait ma journée non‑zéro ✓';btn.classList.remove('done');}
     var dots=document.getElementById('streak-dots');dots.innerHTML='';
     for(var i=6;i>=0;i--){var dd=new Date();dd.setDate(dd.getDate()-i);var el=document.createElement('div');el.className='d'+(set[lkey(dd)]?' on':'');dots.appendChild(el);}
+
+    /* alerte "série en danger" + pastille sur l'onglet Accueil */
+    var warn=document.getElementById('streak-warn');
+    var navAcc=document.querySelector('.tabbar button[data-tab="accueil"]');
+    if(!doneToday){
+      if(navAcc)navAcc.classList.add('nz');
+      if(warn){warn.classList.add('on');warn.textContent=streak>0?('⚠ Série en danger — valide avant minuit pour garder tes '+streak+' jour'+(streak>1?'s':'')):'Pas encore validée aujourd\'hui — une action minuscule suffit.';}
+    }else{
+      if(navAcc)navAcc.classList.remove('nz');
+      if(warn)warn.classList.remove('on');
+    }
+
+    /* ligne personnalisée : jour + objectif (depuis l'onboarding) */
+    var perso=document.getElementById('home-perso');
+    if(perso){
+      var sd=ls_get('sys_startDate','');var goal=ls_get('sys_goal','');
+      if(sd){
+        var day=Math.floor((stripTime(now)-stripTime(parseISO(sd)))/86400000)+1;if(day<1)day=1;
+        perso.classList.add('on');
+        perso.innerHTML='Jour <b>'+day+'</b> de ton aventure'+(goal?(' · Objectif : <b>'+goal+'</b>'):'');
+      }else{perso.classList.remove('on');}
+    }
 
     var next=null;for(var j=0;j<actions.length;j++){if(ls_get('sys_'+actions[j][0],'0')!=='1'){next=actions[j][1];break;}}
     document.getElementById('next-action').textContent=next?next:'Tout est coché 💪 Passe au batch de tes 3 premières vidéos.';
@@ -914,6 +981,35 @@ Réponds « GO » et je t'envoie le lien de réservation.</div></div>
   document.getElementById('m-plus').addEventListener('click',function(){var cm=parseInt(ls_get('sys_curMonth','1'),10);ls_set('sys_curMonth',Math.min(18,cm+1));refreshHome();});
   document.getElementById('v-minus').addEventListener('click',function(){var v=parseInt(ls_get('sys_vid','0'),10)||0;ls_set('sys_vid',Math.max(0,v-1));refreshHome();});
   document.getElementById('v-plus').addEventListener('click',function(){var v=parseInt(ls_get('sys_vid','0'),10)||0;ls_set('sys_vid',v+1);refreshHome();});
+
+  /* ---- onboarding au 1er lancement ---- */
+  (function(){
+    var ov=document.getElementById('ob-overlay');if(!ov)return;
+    var di=document.getElementById('ob-date');
+    if(di&&!di.value){di.value=lkey(new Date());}
+    var goalSel='';
+    document.querySelectorAll('#ob-opts .ob-opt').forEach(function(o){
+      o.addEventListener('click',function(){
+        document.querySelectorAll('#ob-opts .ob-opt').forEach(function(x){x.classList.remove('sel');});
+        o.classList.add('sel');goalSel=o.getAttribute('data-goal');
+      });
+    });
+    function finish(save){
+      if(save){
+        var d=(di&&di.value)?di.value:lkey(new Date());
+        ls_set('sys_startDate',d);
+        if(goalSel)ls_set('sys_goal',goalSel);
+        var elapsed=Math.floor((stripTime(new Date())-stripTime(parseISO(d)))/86400000);
+        ls_set('sys_curMonth',String(Math.min(18,Math.max(1,Math.floor(elapsed/30)+1))));
+      }
+      ls_set('sys_onboarded','1');
+      ov.classList.remove('on');
+      refreshHome();
+    }
+    var go=document.getElementById('ob-go');if(go)go.addEventListener('click',function(){finish(true);});
+    var sk=document.getElementById('ob-skip');if(sk)sk.addEventListener('click',function(){finish(false);});
+    if(ls_get('sys_onboarded','0')!=='1')ov.classList.add('on');
+  })();
 
   var last=ls_get('sys_lastTab','accueil');if(!titles[last])last='accueil';
   showTab(last);refreshHome();
